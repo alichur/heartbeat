@@ -26,12 +26,6 @@ export default function Home() {
     <div className="App">
       <h1>Heartbeat</h1>
       <Insight />
-      <Link to="insights/date">View data by date</Link>
-      <Link to="insights/time">View data by time</Link>
-      <Routes>
-        <Route path="date" element={<Insight type="date" />} />
-        <Route path="time" element={<Insight type="time" />} />
-      </Routes>
     </div>
   );
 }
