@@ -1,6 +1,28 @@
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { Routes, Route, Link } from "react-router-dom";
+import { useState, useContext, useEffect } from "react";
+import { AuthContext } from "react-oauth2-code-pkce";
+
 const Insight = ({ type }) => {
-  console.log(type);
+  const [data, setData] = useState(null);
+  const { token } = useContext(AuthContext);
+  const [period, setPeriod] = useState("");
+
+  useEffect(() => {
+    async function fetchData() {
+      let res = await fetch(
+        "https://api.fitbit.com/1/user/-/activities/heart/date/today/1d.json",
+        {
+          headers: {
+            authorization: `Bearer ${token}`
+          }
+        }
+      );
+      let resData = await res.json();
+      setData(JSON.stringify(resData));
+    }
+    fetchData();
+  }, []);
+
   return (
     <div>
       {!type && (
@@ -16,7 +38,11 @@ const Insight = ({ type }) => {
           </div>
         </>
       )}
-      {type && <p>This will be data and graph for type: {type}</p>}
+      {type && (
+        <p>
+          This will be data and graph for type: {type} {data}
+        </p>
+      )}
     </div>
   );
 };

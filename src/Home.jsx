@@ -1,5 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import { useEffect, useState, useContext } from "react";
+import { useState, useContext } from "react";
 import { AuthContext } from "react-oauth2-code-pkce";
 import Insight from "./Insight";
 export default function Home() {
@@ -7,21 +6,6 @@ export default function Home() {
   const { token } = useContext(AuthContext);
   const [period, setPeriod] = useState("");
 
-  useEffect(() => {
-    async function fetchData() {
-      let res = await fetch(
-        "https://api.fitbit.com/1/user/-/activities/heart/date/today/1d.json",
-        {
-          headers: {
-            authorization: `Bearer ${token}`
-          }
-        }
-      );
-      let resData = await res.json();
-      setData(JSON.stringify(resData["activities-heart"][0].value));
-    }
-    fetchData();
-  }, []);
   return (
     <div className="App">
       <h1>Heartbeat</h1>
