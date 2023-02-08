@@ -12,26 +12,26 @@ import {
 } from "recharts";
 
 const initialData = [
-  { name: 1, cost: 4.11, impression: 100 },
-  { name: 2, cost: 2.39, impression: 120 },
-  { name: 3, cost: 1.37, impression: 150 },
-  { name: 4, cost: 1.16, impression: 180 },
-  { name: 5, cost: 2.29, impression: 200 },
-  { name: 6, cost: 3, impression: 499 },
-  { name: 7, cost: 0.53, impression: 50 },
-  { name: 8, cost: 2.52, impression: 100 },
-  { name: 9, cost: 1.79, impression: 200 },
-  { name: 10, cost: 2.94, impression: 222 },
-  { name: 11, cost: 4.3, impression: 210 },
-  { name: 12, cost: 4.41, impression: 300 },
-  { name: 13, cost: 2.1, impression: 50 },
-  { name: 14, cost: 8, impression: 190 },
-  { name: 15, cost: 0, impression: 300 },
-  { name: 16, cost: 9, impression: 400 },
-  { name: 17, cost: 3, impression: 200 },
-  { name: 18, cost: 2, impression: 50 },
-  { name: 19, cost: 3, impression: 100 },
-  { name: 20, cost: 7, impression: 100 }
+  { time: 1, value: 4.11 },
+  { time: 2, value: 2.39 },
+  { time: 3, value: 1.37 },
+  { time: 4, value: 1.16 },
+  { time: 5, value: 2.29 },
+  { time: 6, value: 3 },
+  { time: 7, value: 0.53 },
+  { time: 8, value: 2.52 },
+  { time: 9, value: 1.79 },
+  { time: 10, value: 2.94 },
+  { time: 11, value: 4.3 },
+  { time: 12, value: 4.41 },
+  { time: 13, value: 2.1 },
+  { time: 14, value: 8 },
+  { time: 15, value: 0 },
+  { time: 16, value: 9 },
+  { time: 17, value: 3 },
+  { time: 18, value: 2 },
+  { time: 19, value: 3 },
+  { time: 20, value: 7 }
 ];
 
 const getAxisYDomain = (from, to, ref, offset) => {
@@ -53,12 +53,10 @@ const initialState = {
   refAreaRight: "",
   top: "dataMax+1",
   bottom: "dataMin-1",
-  top2: "dataMax+20",
-  bottom2: "dataMin-20",
   animation: true
 };
 
-export default class Example extends PureComponent {
+export default class ZoomChart extends PureComponent {
   static demoUrl = "https://codesandbox.io/s/highlight-zomm-line-chart-v77bt";
 
   constructor(props) {
@@ -83,13 +81,7 @@ export default class Example extends PureComponent {
       [refAreaLeft, refAreaRight] = [refAreaRight, refAreaLeft];
 
     // yAxis domain
-    const [bottom, top] = getAxisYDomain(refAreaLeft, refAreaRight, "cost", 1);
-    const [bottom2, top2] = getAxisYDomain(
-      refAreaLeft,
-      refAreaRight,
-      "impression",
-      50
-    );
+    const [bottom, top] = getAxisYDomain(refAreaLeft, refAreaRight, "value", 1);
 
     this.setState(() => ({
       refAreaLeft: "",
@@ -98,9 +90,7 @@ export default class Example extends PureComponent {
       left: refAreaLeft,
       right: refAreaRight,
       bottom,
-      top,
-      bottom2,
-      top2
+      top
     }));
   }
 
@@ -113,9 +103,7 @@ export default class Example extends PureComponent {
       left: "dataMin",
       right: "dataMax",
       top: "dataMax+1",
-      bottom: "dataMin",
-      top2: "dataMax+50",
-      bottom2: "dataMin+50"
+      bottom: "dataMin"
     }));
   }
 
@@ -128,9 +116,7 @@ export default class Example extends PureComponent {
       refAreaLeft,
       refAreaRight,
       top,
-      bottom,
-      top2,
-      bottom2
+      bottom
     } = this.state;
 
     return (
@@ -162,7 +148,7 @@ export default class Example extends PureComponent {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
               allowDataOverflow
-              dataKey="name"
+              dataKey="time"
               domain={[left, right]}
               type="number"
             />
@@ -172,18 +158,11 @@ export default class Example extends PureComponent {
               type="number"
               yAxisId="1"
             />
-            <YAxis
-              orientation="right"
-              allowDataOverflow
-              domain={[bottom2, top2]}
-              type="number"
-              yAxisId="2"
-            />
             <Tooltip />
             <Line
               yAxisId="1"
               type="natural"
-              dataKey="cost"
+              dataKey="value"
               stroke="#8884d8"
               animationDuration={300}
             />

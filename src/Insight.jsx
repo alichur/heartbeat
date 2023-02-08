@@ -37,10 +37,10 @@ const Insight = ({ type }) => {
         </>
       )}
       {type && (
-        <p>
+        <div>
           This will be data and graph for type: {type} {data}
           <ZoomChart />
-        </p>
+        </div>
       )}
     </div>
   );
