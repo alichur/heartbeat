@@ -1,7 +1,6 @@
 import { useContext } from "react";
 import { AuthContext } from "react-oauth2-code-pkce";
-
-export const UserInfo = () => {
+const UserInfo = () => {
   const { token, tokenData } = useContext(AuthContext);
   return (
     <>
@@ -12,3 +11,4 @@ export const UserInfo = () => {
     </>
   );
 };
+export default UserInfo;
