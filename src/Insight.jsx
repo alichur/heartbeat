@@ -2,6 +2,7 @@ import { Routes, Route, Link } from "react-router-dom";
 import { useState, useContext, useEffect } from "react";
 import { AuthContext } from "react-oauth2-code-pkce";
 import { buildUrl } from "./fitbit-config";
+import ZoomChart from "./ZoomChart.jsx";
 const Insight = ({ type }) => {
   const [data, setData] = useState(null);
   const { token } = useContext(AuthContext);
@@ -38,6 +39,7 @@ const Insight = ({ type }) => {
       {type && (
         <p>
           This will be data and graph for type: {type} {data}
+          <ZoomChart />
         </p>
       )}
     </div>
