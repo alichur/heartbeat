@@ -16,7 +16,7 @@ const Insight = ({ type }) => {
         }
       });
       let resData = await res.json();
-      setData(JSON.stringify(resData));
+      setData(resData);
     }
     fetchData();
   }, [type]);
@@ -38,8 +38,10 @@ const Insight = ({ type }) => {
       )}
       {type && (
         <div>
-          This will be data and graph for type: {type} {data}
-          <ZoomChart />
+          This will be data and graph for type: {type}{" "}
+          {data && (
+            <ZoomChart data={data["activities-heart-intraday"].dataset} />
+          )}
         </div>
       )}
     </div>

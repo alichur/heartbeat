@@ -1,3 +1,4 @@
+//Mostly from Rechart example docs:  https://recharts.org/en-US/examples/HighlightAndZoomLineChart
 import React, { PureComponent } from "react";
 import {
   Label,
@@ -11,59 +12,45 @@ import {
   ResponsiveContainer
 } from "recharts";
 
-const initialData = [
-  { time: 1, value: 4.11 },
-  { time: 2, value: 2.39 },
-  { time: 3, value: 1.37 },
-  { time: 4, value: 1.16 },
-  { time: 5, value: 2.29 },
-  { time: 6, value: 3 },
-  { time: 7, value: 0.53 },
-  { time: 8, value: 2.52 },
-  { time: 9, value: 1.79 },
-  { time: 10, value: 2.94 },
-  { time: 11, value: 4.3 },
-  { time: 12, value: 4.41 },
-  { time: 13, value: 2.1 },
-  { time: 14, value: 8 },
-  { time: 15, value: 0 },
-  { time: 16, value: 9 },
-  { time: 17, value: 3 },
-  { time: 18, value: 2 },
-  { time: 19, value: 3 },
-  { time: 20, value: 7 }
-];
-
-const getAxisYDomain = (from, to, ref, offset) => {
-  const refData = initialData.slice(from - 1, to);
-  let [bottom, top] = [refData[0][ref], refData[0][ref]];
-  refData.forEach(d => {
-    if (d[ref] > top) top = d[ref];
-    if (d[ref] < bottom) bottom = d[ref];
-  });
-
-  return [(bottom | 0) - offset, (top | 0) + offset];
-};
-
-const initialState = {
-  data: initialData,
-  left: "dataMin",
-  right: "dataMax",
-  refAreaLeft: "",
-  refAreaRight: "",
-  top: "dataMax+1",
-  bottom: "dataMin-1",
-  animation: true
-};
-
 export default class ZoomChart extends PureComponent {
   static demoUrl = "https://codesandbox.io/s/highlight-zomm-line-chart-v77bt";
-
+  initialData = [];
   constructor(props) {
     super(props);
+    this.initialData = props.data;
+    const initialState = {
+      data: this.initialData,
+      left: "dataMin",
+      right: "dataMax",
+      refAreaLeft: "",
+      refAreaRight: "",
+      top: "dataMax+1",
+      bottom: "dataMin-1",
+      animation: true
+    };
     this.state = initialState;
   }
+  componentDidUpdate(prevProps) {
+    if (this.props.data !== prevProps.data) {
+      this.setState({ data: this.props.data });
+    }
+  }
+  getAxisYDomain(from, to, ref, offset) {
+    const refData = this.initialData.slice(from - 1, to);
+    try {
+      let [bottom, top] = [refData[0][ref], refData[0][ref]];
+      refData.forEach(d => {
+        if (d[ref] > top) top = d[ref];
+        if (d[ref] < bottom) bottom = d[ref];
+      });
 
+      return [(bottom | 0) - offset, (top | 0) + offset];
+    } catch {
+      alert(
+        "Not implemented - todo: make new requets based on selected bounds for seconds. Preload these earlier?"
+      );
+    }
+  }
   zoom() {
     let { refAreaLeft, refAreaRight } = this.state;
     const { data } = this.state;
@@ -81,7 +68,12 @@ export default class ZoomChart extends PureComponent {
       [refAreaLeft, refAreaRight] = [refAreaRight, refAreaLeft];
 
     // yAxis domain
-    const [bottom, top] = getAxisYDomain(refAreaLeft, refAreaRight, "value", 1);
+    const [bottom, top] = this.getAxisYDomain(
+      refAreaLeft,
+      refAreaRight,
+      "value",
+      1
+    );
 
     this.setState(() => ({
       refAreaLeft: "",
@@ -129,7 +121,7 @@ export default class ZoomChart extends PureComponent {
           className="btn update"
           onClick={this.zoomOut.bind(this)}
         >
-          Zoom Out
+          Zoom out
         </button>
 
         <ResponsiveContainer width="100%" height={400}>
@@ -150,7 +142,7 @@ export default class ZoomChart extends PureComponent {
               allowDataOverflow
               dataKey="time"
               domain={[left, right]}
-              type="number"
+              type="category"
             />
             <YAxis
               allowDataOverflow
