@@ -1,7 +1,7 @@
 import { Routes, Route, Link } from "react-router-dom";
 import { useState, useContext, useEffect } from "react";
 import { AuthContext } from "react-oauth2-code-pkce";
-
+import { buildUrl } from "./fitbit-config";
 const Insight = ({ type }) => {
   const [data, setData] = useState(null);
   const { token } = useContext(AuthContext);
@@ -9,19 +9,16 @@ const Insight = ({ type }) => {
 
   useEffect(() => {
     async function fetchData() {
-      let res = await fetch(
-        "https://api.fitbit.com/1/user/-/activities/heart/date/today/1d.json",
-        {
-          headers: {
-            authorization: `Bearer ${token}`
-          }
+      let res = await fetch(buildUrl(type), {
+        headers: {
+          authorization: `Bearer ${token}`
         }
-      );
+      });
       let resData = await res.json();
       setData(JSON.stringify(resData));
     }
     fetchData();
-  }, []);
+  }, [type]);
 
   return (
     <div>
