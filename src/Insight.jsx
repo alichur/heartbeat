@@ -3,10 +3,11 @@ import { useState, useContext, useEffect } from "react";
 import { AuthContext } from "react-oauth2-code-pkce";
 import { buildUrl } from "./fitbit-config";
 import ZoomChart from "./ZoomChart.jsx";
+import { getDateFromOrphanTime } from "./utils";
+
 const Insight = ({ type }) => {
   const [data, setData] = useState(null);
   const { token } = useContext(AuthContext);
-  const [period, setPeriod] = useState("");
 
   useEffect(() => {
     async function fetchData() {
@@ -39,8 +40,28 @@ const Insight = ({ type }) => {
       {type && (
         <div>
           This will be data and graph for type: {type}{" "}
-          {data && (
-            <ZoomChart data={data["activities-heart-intraday"].dataset} />
+          {data && data["activities-heart-intraday"] && type === "time" && (
+            <ZoomChart
+              granularity="time"
+              data={data["activities-heart-intraday"].dataset.map(entry => {
+                let timeString = getDateFromOrphanTime(
+                  data["activities-heart"][0].dateTime,
+                  entry.time
+                );
+                return { time: timeString, value: entry.value };
+              })}
+            />
+          )}
+          {data && data["activities-heart"] && type === "date" && (
+            <ZoomChart
+              granularity="date"
+              data={data["activities-heart"].map(entry => {
+                return {
+                  time: Date.parse(entry.dateTime),
+                  value: entry.value.restingHeartRate
+                };
+              })}
+            />
           )}
         </div>
       )}

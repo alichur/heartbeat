@@ -11,17 +11,13 @@ import {
   ReferenceArea,
   ResponsiveContainer
 } from "recharts";
-import { getDateFromOrphanTime } from "./utils";
 
 export default class ZoomChart extends PureComponent {
   static demoUrl = "https://codesandbox.io/s/highlight-zomm-line-chart-v77bt";
   initialData = [];
   constructor(props) {
     super(props);
-    this.initialData = props.data.map(entry => {
-      entry.time = getDateFromOrphanTime(entry.time);
-      return entry;
-    });
+    this.initialData = props.data;
     const initialState = {
       data: this.initialData,
       left: "dataMin",
@@ -36,11 +32,7 @@ export default class ZoomChart extends PureComponent {
   }
   componentDidUpdate(prevProps) {
     if (this.props.data !== prevProps.data) {
-      let convertedProps = this.props.data.map(entry => {
-        entry.time = getDateFromOrphanTime(entry.time);
-        return entry;
-      });
-      this.setState({ data: convertedProps });
+      this.setState({ data: this.props.data });
     }
   }
   getAxisYDomain(from, to, ref, offset) {
@@ -102,7 +94,11 @@ export default class ZoomChart extends PureComponent {
     }));
   }
   formatXAxis(unixStamp) {
-    return new Date(unixStamp).toLocaleTimeString("it-IT");
+    if (this.props.granularity === "time") {
+      return new Date(unixStamp).toLocaleTimeString("it-IT");
+    } else {
+      return new Date(unixStamp).toLocaleDateString();
+    }
   }
 
   formatYAxis(bpm) {
@@ -168,13 +164,6 @@ export default class ZoomChart extends PureComponent {
               type="natural"
               dataKey="value"
               stroke="#8884d8"
-              animationDuration={300}
-            />
-            <Line
-              yAxisId="2"
-              type="natural"
-              dataKey="impression"
-              stroke="#82ca9d"
               animationDuration={300}
             />
 
