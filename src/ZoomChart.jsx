@@ -39,7 +39,6 @@ export default class ZoomChart extends PureComponent {
       let convertedProps = this.props.data.map(entry => {
         entry.time = getDateFromOrphanTime(entry.time);
         return entry;
-        // format for display new Date(item).toLocaleTimeString('it-IT')
       });
       this.setState({ data: convertedProps });
     }
@@ -102,6 +101,13 @@ export default class ZoomChart extends PureComponent {
       bottom: "dataMin"
     }));
   }
+  formatXAxis(unixStamp) {
+    return new Date(unixStamp).toLocaleTimeString("it-IT");
+  }
+
+  formatYAxis(bpm) {
+    return `${bpm.toString()} BPM`;
+  }
 
   render() {
     const {
@@ -147,12 +153,14 @@ export default class ZoomChart extends PureComponent {
               dataKey="time"
               domain={[left, right]}
               type="number"
+              tickFormatter={tick => this.formatXAxis(tick)}
             />
             <YAxis
               allowDataOverflow
               domain={[bottom, top]}
               type="number"
               yAxisId="1"
+              tickFormatter={tick => this.formatYAxis(tick)}
             />
             <Tooltip />
             <Line
