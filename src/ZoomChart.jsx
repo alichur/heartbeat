@@ -11,13 +11,17 @@ import {
   ReferenceArea,
   ResponsiveContainer
 } from "recharts";
+import { getDateFromOrphanTime } from "./utils";
 
 export default class ZoomChart extends PureComponent {
   static demoUrl = "https://codesandbox.io/s/highlight-zomm-line-chart-v77bt";
   initialData = [];
   constructor(props) {
     super(props);
-    this.initialData = props.data;
+    this.initialData = props.data.map(entry => {
+      entry.time = getDateFromOrphanTime(entry.time);
+      return entry;
+    });
     const initialState = {
       data: this.initialData,
       left: "dataMin",
@@ -32,11 +36,16 @@ export default class ZoomChart extends PureComponent {
   }
   componentDidUpdate(prevProps) {
     if (this.props.data !== prevProps.data) {
-      this.setState({ data: this.props.data });
+      let convertedProps = this.props.data.map(entry => {
+        entry.time = getDateFromOrphanTime(entry.time);
+        return entry;
+        // format for display new Date(item).toLocaleTimeString('it-IT')
+      });
+      this.setState({ data: convertedProps });
     }
   }
   getAxisYDomain(from, to, ref, offset) {
-    const refData = this.initialData.slice(from - 1, to);
+    const refData = this.state.data.slice(from - 1, to);
     try {
       let [bottom, top] = [refData[0][ref], refData[0][ref]];
       refData.forEach(d => {
@@ -45,15 +54,10 @@ export default class ZoomChart extends PureComponent {
       });
 
       return [(bottom | 0) - offset, (top | 0) + offset];
-    } catch {
-      alert(
-        "Not implemented - todo: make new requets based on selected bounds for seconds. Preload these earlier?"
-      );
-    }
+    } catch {}
   }
   zoom() {
-    let { refAreaLeft, refAreaRight } = this.state;
-    const { data } = this.state;
+    let { refAreaLeft, refAreaRight, data } = this.state;
 
     if (refAreaLeft === refAreaRight || refAreaRight === "") {
       this.setState(() => ({
@@ -69,10 +73,10 @@ export default class ZoomChart extends PureComponent {
 
     // yAxis domain
     const [bottom, top] = this.getAxisYDomain(
-      refAreaLeft,
-      refAreaRight,
+      data.findIndex(item => item.time === refAreaLeft),
+      data.findIndex(item => item.time === refAreaRight),
       "value",
-      1
+      10
     );
 
     this.setState(() => ({
@@ -142,7 +146,7 @@ export default class ZoomChart extends PureComponent {
               allowDataOverflow
               dataKey="time"
               domain={[left, right]}
-              type="category"
+              type="number"
             />
             <YAxis
               allowDataOverflow
