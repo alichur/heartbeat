@@ -3,7 +3,7 @@ import { useState, useContext, useEffect } from "react";
 import { AuthContext } from "react-oauth2-code-pkce";
 import { buildUrl } from "./fitbit-config";
 import ZoomChart from "./ZoomChart.jsx";
-import { getDateFromOrphanTime } from "./utils";
+import { formatDateTime } from "./utils";
 
 const Insight = ({ type }) => {
   const [data, setData] = useState(null);
@@ -44,7 +44,7 @@ const Insight = ({ type }) => {
             <ZoomChart
               granularity="time"
               data={data["activities-heart-intraday"].dataset.map(entry => {
-                let timeString = getDateFromOrphanTime(
+                let timeString = formatDateTime(
                   data["activities-heart"][0].dateTime,
                   entry.time
                 );

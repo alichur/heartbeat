@@ -1,4 +1,4 @@
-export function getDateFromOrphanTime(dateString, timeString) {
+export function formatDateTime(dateString, timeString) {
   if (timeString) {
     return Date.parse(`${dateString}T${timeString}`);
   }
