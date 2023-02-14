@@ -1,9 +1,9 @@
 import { useParams } from "react-router-dom";
 import ZoomChart from "./ZoomChart.jsx";
-import { formatDateTime } from "./utils";
+import { formatDateTime } from "../utils";
 import { useEffect, useState, useContext } from "react";
 import { AuthContext } from "react-oauth2-code-pkce";
-import { buildUrl } from "./fitbit-config";
+import { buildUrl } from "../fitbit-config";
 
 export default function Result() {
   let params = useParams();

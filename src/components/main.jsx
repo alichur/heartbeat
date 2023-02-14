@@ -1,10 +1,12 @@
+import React from "react";
+import ReactDOM from "react-dom/client";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Fitbit from "./Fitbit";
 import Insight from "./Insight";
 import Result from "./Result";
 
-function App() {
-  return (
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <React.StrictMode>
     <Router>
       <Routes>
         <Route path="*" element={<Fitbit />}>
@@ -13,8 +15,6 @@ function App() {
           </Route>
         </Route>
       </Routes>
-    </Router>
-  );
-}
-
-export default App;
+    </Router>{" "}
+  </React.StrictMode>
+);
