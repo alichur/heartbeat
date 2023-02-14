@@ -3,6 +3,7 @@ import { useState, useContext } from "react";
 
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
+import Stack from "@mui/material/Stack";
 import { Outlet } from "react-router-dom";
 
 // import TabPanel from "@mui/lab/TabPanel";
@@ -10,21 +11,27 @@ import { Outlet } from "react-router-dom";
 const Insight = () => {
   const [period, setPeriod] = useState("date");
 
-  const handleTabChange = (e) => {
-    setPeriod(e.target.value);
+  const handleTabChange = (e, newValue) => {
+    setPeriod(newValue);
   };
   return (
-    <div>
-      <>
-        <p>please select a type. Current selected type is: {period}</p>
-        <div>
-          <Link to="/insights/date">View data by date</Link>
-          <Link to="/insights/time">View data by time</Link>
-        </div>
-      </>
-
+    <Stack spacing={2}>
+      <Tabs value={period} onChange={handleTabChange}>
+        <Tab
+          value={"date"}
+          label="Date tab"
+          component={Link}
+          to={"/insights/date"}
+        ></Tab>
+        <Tab
+          value={"time"}
+          label="Time tab"
+          component={Link}
+          to={"/insights/time"}
+        ></Tab>
+      </Tabs>
       <Outlet context={[period]} />
-    </div>
+    </Stack>
   );
 };
 export default Insight;

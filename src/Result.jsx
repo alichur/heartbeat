@@ -24,11 +24,8 @@ export default function Result() {
   }, [type]);
   return (
     <div>
-      {" "}
-      my result is {type}
       {type && (
         <div>
-          This will be data and graph for type: {type}{" "}
           {data && data["activities-heart-intraday"] && type === "time" && (
             <ZoomChart
               granularity="time"
