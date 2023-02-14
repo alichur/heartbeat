@@ -16,13 +16,13 @@ const Insight = () => {
       <Tabs value={period} onChange={handleTabChange}>
         <Tab
           value={"date"}
-          label="Date tab"
+          label="View By Date"
           component={Link}
           to={"/insights/date"}
         ></Tab>
         <Tab
           value={"time"}
-          label="Time tab"
+          label="View By Time"
           component={Link}
           to={"/insights/time"}
         ></Tab>
