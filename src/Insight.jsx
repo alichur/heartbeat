@@ -1,13 +1,10 @@
-import { Routes, Route, Link } from "react-router-dom";
-import { useState, useContext } from "react";
-
+import { Link } from "react-router-dom";
+import { useState } from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Stack from "@mui/material/Stack";
 import { Outlet } from "react-router-dom";
 
-// import TabPanel from "@mui/lab/TabPanel";
-// import Link from "@mui/material/Link";
 const Insight = () => {
   const [period, setPeriod] = useState("date");
 

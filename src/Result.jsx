@@ -1,15 +1,16 @@
 import { useParams } from "react-router-dom";
-import { useOutletContext } from "react-router-dom";
 import ZoomChart from "./ZoomChart.jsx";
 import { formatDateTime } from "./utils";
 import { useEffect, useState, useContext } from "react";
 import { AuthContext } from "react-oauth2-code-pkce";
 import { buildUrl } from "./fitbit-config";
+
 export default function Result() {
   let params = useParams();
   let type = params.granularity;
   const [data, setData] = useState(null);
   const { token } = useContext(AuthContext);
+
   useEffect(() => {
     async function fetchData() {
       let res = await fetch(buildUrl(type), {
@@ -22,6 +23,7 @@ export default function Result() {
     }
     fetchData();
   }, [type]);
+
   return (
     <div>
       {type && (
