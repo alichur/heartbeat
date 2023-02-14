@@ -13,7 +13,7 @@ export const authConfig = {
 const intradayExampleUrl =
   "https://api.fitbit.com/1/user/-/activities/heart/date/2023-01-23/1d/1min/time/08:00/08:30.json";
 const dateExampleUrl =
-  "https://api.fitbit.com/1/user/-/activities/heart/date/2023-01-23/1d.json";
+  "https://api.fitbit.com/1/user/-/activities/heart/date/2023-01-23/1m.json";
 
 export function buildUrl(type) {
   if (type === "date") {
