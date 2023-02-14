@@ -1,5 +1,7 @@
 //Mostly from Rechart example docs:  https://recharts.org/en-US/examples/HighlightAndZoomLineChart
 import React, { PureComponent } from "react";
+import Button from "@mui/material/Button";
+
 import {
   Label,
   LineChart,
@@ -9,7 +11,7 @@ import {
   YAxis,
   Tooltip,
   ReferenceArea,
-  ResponsiveContainer
+  ResponsiveContainer,
 } from "recharts";
 
 export default class ZoomChart extends PureComponent {
@@ -26,7 +28,7 @@ export default class ZoomChart extends PureComponent {
       refAreaRight: "",
       top: "dataMax+1",
       bottom: "dataMin-1",
-      animation: true
+      animation: true,
     };
     this.state = initialState;
   }
@@ -39,7 +41,7 @@ export default class ZoomChart extends PureComponent {
     const refData = this.state.data.slice(from - 1, to);
     try {
       let [bottom, top] = [refData[0][ref], refData[0][ref]];
-      refData.forEach(d => {
+      refData.forEach((d) => {
         if (d[ref] > top) top = d[ref];
         if (d[ref] < bottom) bottom = d[ref];
       });
@@ -53,7 +55,7 @@ export default class ZoomChart extends PureComponent {
     if (refAreaLeft === refAreaRight || refAreaRight === "") {
       this.setState(() => ({
         refAreaLeft: "",
-        refAreaRight: ""
+        refAreaRight: "",
       }));
       return;
     }
@@ -64,8 +66,8 @@ export default class ZoomChart extends PureComponent {
 
     // yAxis domain
     const [bottom, top] = this.getAxisYDomain(
-      data.findIndex(item => item.time === refAreaLeft),
-      data.findIndex(item => item.time === refAreaRight),
+      data.findIndex((item) => item.time === refAreaLeft),
+      data.findIndex((item) => item.time === refAreaRight),
       "value",
       10
     );
@@ -77,7 +79,7 @@ export default class ZoomChart extends PureComponent {
       left: refAreaLeft,
       right: refAreaRight,
       bottom,
-      top
+      top,
     }));
   }
 
@@ -90,7 +92,7 @@ export default class ZoomChart extends PureComponent {
       left: "dataMin",
       right: "dataMax",
       top: "dataMax+1",
-      bottom: "dataMin"
+      bottom: "dataMin",
     }));
   }
   formatXAxis(unixStamp) {
@@ -114,7 +116,7 @@ export default class ZoomChart extends PureComponent {
       refAreaLeft,
       refAreaRight,
       top,
-      bottom
+      bottom,
     } = this.state;
 
     return (
@@ -122,21 +124,22 @@ export default class ZoomChart extends PureComponent {
         className="highlight-bar-charts"
         style={{ userSelect: "none", width: "100%" }}
       >
-        <button
+        <Button
           type="button"
+          variant="outlined"
           className="btn update"
           onClick={this.zoomOut.bind(this)}
         >
           Zoom out
-        </button>
+        </Button>
 
         <ResponsiveContainer width="100%" height={400}>
           <LineChart
             width={800}
             height={400}
             data={data}
-            onMouseDown={e => this.setState({ refAreaLeft: e.activeLabel })}
-            onMouseMove={e =>
+            onMouseDown={(e) => this.setState({ refAreaLeft: e.activeLabel })}
+            onMouseMove={(e) =>
               this.state.refAreaLeft &&
               this.setState({ refAreaRight: e.activeLabel })
             }
@@ -149,14 +152,14 @@ export default class ZoomChart extends PureComponent {
               dataKey="time"
               domain={[left, right]}
               type="number"
-              tickFormatter={tick => this.formatXAxis(tick)}
+              tickFormatter={(tick) => this.formatXAxis(tick)}
             />
             <YAxis
               allowDataOverflow
               domain={[bottom, top]}
               type="number"
               yAxisId="1"
-              tickFormatter={tick => this.formatYAxis(tick)}
+              tickFormatter={(tick) => this.formatYAxis(tick)}
             />
             <Tooltip />
             <Line

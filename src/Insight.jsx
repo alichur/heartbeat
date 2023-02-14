@@ -1,71 +1,34 @@
-import { Routes, Route, Link } from "react-router-dom";
-import { useState, useContext, useEffect } from "react";
-import { AuthContext } from "react-oauth2-code-pkce";
-import { buildUrl } from "./fitbit-config";
-import ZoomChart from "./ZoomChart.jsx";
-import { formatDateTime } from "./utils";
+import { Link } from "react-router-dom";
+import { useState } from "react";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import Stack from "@mui/material/Stack";
+import { Outlet } from "react-router-dom";
 
-const Insight = ({ type }) => {
-  const [data, setData] = useState(null);
-  const { token } = useContext(AuthContext);
+const Insight = () => {
+  const [period, setPeriod] = useState("date");
 
-  useEffect(() => {
-    async function fetchData() {
-      let res = await fetch(buildUrl(type), {
-        headers: {
-          authorization: `Bearer ${token}`
-        }
-      });
-      let resData = await res.json();
-      setData(resData);
-    }
-    fetchData();
-  }, [type]);
-
+  const handleTabChange = (e, newValue) => {
+    setPeriod(newValue);
+  };
   return (
-    <div>
-      {!type && (
-        <>
-          <p>please select a type. Current selected type is: {type}</p>
-          <div>
-            <Link to="./date">View data by date</Link>
-            <Link to="./time">View data by time</Link>
-            <Routes>
-              <Route path="date" element={<Insight type="date" />} />
-              <Route path="time" element={<Insight type="time" />} />
-            </Routes>
-          </div>
-        </>
-      )}
-      {type && (
-        <div>
-          This will be data and graph for type: {type}{" "}
-          {data && data["activities-heart-intraday"] && type === "time" && (
-            <ZoomChart
-              granularity="time"
-              data={data["activities-heart-intraday"].dataset.map(entry => {
-                let timeString = formatDateTime(
-                  data["activities-heart"][0].dateTime,
-                  entry.time
-                );
-                return { time: timeString, value: entry.value };
-              })}
-            />
-          )}
-          {data && data["activities-heart"] && type === "date" && (
-            <ZoomChart
-              granularity="date"
-              data={data["activities-heart"].map(entry => {
-                return {
-                  time: Date.parse(entry.dateTime),
-                  value: entry.value.restingHeartRate
-                };
-              })}
-            />
-          )}
-        </div>
-      )}
-    </div>
+    <Stack spacing={2}>
+      <Tabs value={period} onChange={handleTabChange}>
+        <Tab
+          value={"date"}
+          label="View By Date"
+          component={Link}
+          to={"/insights/date"}
+        ></Tab>
+        <Tab
+          value={"time"}
+          label="View By Time"
+          component={Link}
+          to={"/insights/time"}
+        ></Tab>
+      </Tabs>
+      <Outlet context={[period]} />
+    </Stack>
   );
 };
 export default Insight;
