@@ -9,7 +9,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <Router>
       <Routes>
-        <Route path="*" element={<Fitbit />}>
+        <Route path="/" element={<Fitbit />}>
           <Route path="insights" element={<Insight />}>
             <Route path=":granularity" element={<Result />} />
           </Route>

@@ -1,9 +1,9 @@
 import { useParams } from "react-router-dom";
 import ZoomChart from "./ZoomChart.jsx";
-import { formatDateTime } from "../utils";
+import { formatDateData, formatTimeData } from "../utils";
 import { useEffect, useState, useContext } from "react";
 import { AuthContext } from "react-oauth2-code-pkce";
-import { buildUrl } from "../fitbit-config";
+import { buildUrl, intradayString, activitiesString } from "../fitbit-config";
 
 export default function Result() {
   let params = useParams();
@@ -13,11 +13,19 @@ export default function Result() {
 
   useEffect(() => {
     async function fetchData() {
-      let res = await fetch(buildUrl(type), {
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-      });
+      let res = await fetch(
+        buildUrl(type, {
+          dateStart: "2023-01-23",
+          dateRange: "1m",
+          timeStart: "08:00",
+          timeEnd: "08:30",
+        }),
+        {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+        }
+      );
       let resData = await res.json();
       setData(resData);
     }
@@ -28,28 +36,11 @@ export default function Result() {
     <div>
       {type && (
         <div>
-          {data && data["activities-heart-intraday"] && type === "time" && (
-            <ZoomChart
-              granularity="time"
-              data={data["activities-heart-intraday"].dataset.map((entry) => {
-                let timeString = formatDateTime(
-                  data["activities-heart"][0].dateTime,
-                  entry.time
-                );
-                return { time: timeString, value: entry.value };
-              })}
-            />
+          {data && data[intradayString] && type === "time" && (
+            <ZoomChart granularity="time" data={formatTimeData(data)} />
           )}
-          {data && data["activities-heart"] && type === "date" && (
-            <ZoomChart
-              granularity="date"
-              data={data["activities-heart"].map((entry) => {
-                return {
-                  time: Date.parse(entry.dateTime),
-                  value: entry.value.restingHeartRate,
-                };
-              })}
-            />
+          {data && data[activitiesString] && type === "date" && (
+            <ZoomChart granularity="date" data={formatDateData(data)} />
           )}
         </div>
       )}
